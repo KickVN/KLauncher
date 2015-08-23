@@ -25,7 +25,6 @@ public class Minecraft {
     private long time=System.currentTimeMillis();
     public Minecraft(Launcher lc) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
         this.l= lc;
-//        if(!validFile(l.cobj.mcpath+"versions.json")){
         try {
             FileUtils.copyURLToFile(new URL("http://s3.amazonaws.com/Minecraft.Download/versions/versions.json")
                     ,new File(l.cobj.mcpath+"versions.json"),2000,2000);
@@ -134,20 +133,10 @@ public class Minecraft {
                                 AddMsg(e.getMessage());
                                 e.printStackTrace();
                             }
-//                            AddMsg("Đã tải xong thư viện " + p);
-//                        } else AddMsg("Đã có thư viện này, bỏ qua tải.");
                     }
                 }
             if(lib.natives==null) {
                 String p = l.cobj.mcpath + "libraries\\" + spl[0].replace('.', '\\') + "\\" + spl[1] + "\\" + spl[2] + "\\" + spl[1] + "-" + spl[2] + ".jar";
-//                if(spl[1].equals("launchwrapper")){
-//                            if(!validFile(p)){
-//                                FileUtils.copyURLToFile(new URL("https://libraries.minecraft.net/net/minecraft/launchwrapper/" + spl[2] + "/" + spl[1] + "-" + spl[2] + ".jar")
-//                                        , new File(p));
-//                                FileUtils.copyURLToFile(new URL("https://libraries.minecraft.net/net/minecraft/launchwrapper/" + spl[2] + "/" + spl[1] + "-" + spl[2] + ".jar.sha1")
-//                                        , new File(p+".sha1"));
-//                            }
-//                }
                 libs += p+";";
             }
             }
@@ -344,7 +333,6 @@ public class Minecraft {
             }
         }
         String[] verlist =  ver.toArray(new String[ver.size()]);
-//        Arrays.sort(verlist, Collections.reverseOrder());
         return verlist;
     }
     private void executeCommand(String command) throws FileNotFoundException {

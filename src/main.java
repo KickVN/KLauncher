@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
- * Created by Admin on 24/6/2015.
+ * Created by KickVN on 24/6/2015.
  */
 public class main {
     static String version="1.0.5";
@@ -37,7 +37,6 @@ public class main {
         String currver = null;
         try {
             currver = getVer();
-//            String pcver = loadVer();
             if(!currver.equals(version)) {
                 UpdateDl upd = new UpdateDl(currver,version);
                 upd.pack();
@@ -60,10 +59,6 @@ public class main {
         }
         l = new Launcher();
         window.setVisible(false);
-//        Minecraft m = new Minecraft();
-//        m.Start("Kickz","1.7.9");
-//        m.Start("Kickz");
-//        m.test();
     }
 
     private static boolean validFile(String p){
@@ -73,53 +68,6 @@ public class main {
         }
         return false;
     }
-//    public static void saveVer(String ver) throws FileNotFoundException {
-//        File file = new File("KVersion.json");
-//
-//        try (FileOutputStream fop = new FileOutputStream(file)) {
-//
-//            // if file doesn't exists, then create it
-//            if (!file.exists()) {
-//                file.createNewFile();
-//            }
-//
-//            // get the content in bytes
-//            byte[] contentInBytes = ver.getBytes();
-//
-//            fop.write(contentInBytes);
-//            fop.flush();
-//            fop.close();
-//
-//
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
-/*    public static String loadVer() throws IOException {
-        if(validFile("KVersion.json")){
-            BufferedReader br = new BufferedReader(new FileReader("KVersion.json"));
-            String ver = null;
-            try {
-                StringBuilder sb = new StringBuilder();
-                String line = br.readLine();
-
-                while (line != null) {
-                    sb.append(line);
-                    line = br.readLine();
-                }
-                ver = sb.toString();
-            } catch (IOException e) {
-                e.printStackTrace();
-            } finally {
-                br.close();
-            }
-            return ver;
-        }
-        else{
-            saveVer(version);
-            return version;
-        }
-    }*/
     public static String getVer() throws IOException {
         URL url = new URL(Url+"version.txt");
 

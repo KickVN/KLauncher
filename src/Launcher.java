@@ -47,13 +47,6 @@ public class Launcher extends JFrame{
         s = new Setting(this);
         loadServerList();
         loadVerList();
-//        VerList.addItemListener(new ItemChangeListener());
-//        VerList.add(new ActionListener() {
-//            public void actionPerformed(ActionEvent e) {
-//                cobj.version = VerList.getSelectedItem().toString();
-////                System.out.println(VerList.getSelectedItem().toString(););
-//            }
-//        });
         JEditorPane web = new JEditorPane();
         web.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
         web.addHyperlinkListener(new HyperlinkListener() {
@@ -176,8 +169,6 @@ public class Launcher extends JFrame{
         VerList.removeAllItems();
         if(validDir(cobj.mcpath)) {
             String[] list = m.ListVer();
-//        System.out.println( "\\u" + Integer.toHexString('?' | 0x10000).substring(1) );
-//        System.exit(1);
             for (String li : list) {
                 VerList.addItem(li);
             }
@@ -203,12 +194,10 @@ public class Launcher extends JFrame{
 
         try (FileOutputStream fop = new FileOutputStream(file)) {
 
-            // if file doesn't exists, then create it
             if (!file.exists()) {
                 file.createNewFile();
             }
 
-            // get the content in bytes
             byte[] contentInBytes = json.getBytes();
 
             fop.write(contentInBytes);
@@ -265,18 +254,6 @@ public class Launcher extends JFrame{
     }
     private void createUIComponents() {
 
-//        jep = new JEditorPane();
-//        jep.setEditable(false);
-////
-//        try {
-//            jep.setPage("http://localhost/launcher/launcher.html");
-//        }catch (IOException e) {
-//            jep.setContentType("text/html");
-//            jep.setText("<html>Đang bảo trì</html>");
-//        }
-//        jep.setSize(500,500);
-//        WebScroll = new JScrollPane(browser.getComponent());
-//        HomePanel.add(jep);
         LogPane = new JTextArea();
         LogPane.setEditable(false);
         LogPane.setText("");
