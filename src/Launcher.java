@@ -2,11 +2,15 @@ import com.google.gson.Gson;
 import net.lingala.zip4j.exception.ZipException;
 import sun.rmi.runtime.Log;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
+import javax.swing.colorchooser.AbstractColorChooserPanel;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.geom.RoundRectangle2D;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -34,25 +38,28 @@ public class Launcher extends JFrame{
     private JScrollPane WebScroll;
     private JButton settingBtn;
     public JComboBox ServerList;
+    private JPanel topPanel;
+    private JButton exitButton;
+    private JLabel topLabel;
     public Minecraft m;
     private JEditorPane jep;
     public ConfigObj cobj;
     public Map<String,String> svlist;
     Setting s;
     String Url = main.Url;
+    private Point initialClick;
     public Launcher() throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException, IOException {
-        super("KLauncher v"+main.version+" - VN Minecraft Launcher");
+        super("KLauncher v" + main.version + " - VN Minecraft Launcher");
+        topLabel.setText("KLauncher v" + main.version + " - VN Minecraft Launcher");
         cobj=loadConfig();
         m = new Minecraft(this);
         s = new Setting(this);
-        loadServerList();
-        loadVerList();
         JEditorPane web = new JEditorPane();
         web.setEditorKit(JEditorPane.createEditorKitForContentType("text/html"));
         web.addHyperlinkListener(new HyperlinkListener() {
             public void hyperlinkUpdate(HyperlinkEvent e) {
                 if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                    if(Desktop.isDesktopSupported()) {
+                    if (Desktop.isDesktopSupported()) {
                         try {
                             Desktop.getDesktop().browse(e.getURL().toURI());
                         } catch (IOException e1) {
@@ -75,13 +82,13 @@ public class Launcher extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                    StartBtn.setText("Đang Chơi");
-                    StartBtn.setEnabled(false);
-                    TabPane.setSelectedIndex(1);
-                    Component component = (Component) e.getSource();
-                    Launcher frame = (Launcher) SwingUtilities.getRoot(component);
-                    StartThread tr = new StartThread(frame);
-                    tr.start();
+                StartBtn.setText("Đang Chơi");
+                StartBtn.setEnabled(false);
+                TabPane.setSelectedIndex(1);
+                Component component = (Component) e.getSource();
+                Launcher frame = (Launcher) SwingUtilities.getRoot(component);
+                StartThread tr = new StartThread(frame);
+                tr.start();
 
 
             }
@@ -92,20 +99,75 @@ public class Launcher extends JFrame{
                 s.setVisible(true);
             }
         });
-        setSize(800,450);
+        setSize(800, 450);
         TabPane.setFocusable(false);
         VerList.setFocusable(false);
         progressBar.setStringPainted(true);
         progressBar.setString("");
+        setUndecorated(true);
+        setShape(new RoundRectangle2D.Double(0, 0, getWidth(), getHeight(), 20, 11.25));
         setContentPane(mainPanel);
         setResizable(false);
         Image icon = Toolkit.getDefaultToolkit().getImage(getClass().getResource("images/diamond.png"));
         setIconImage(icon);
-//        if(cobj.isQS) QuickStart.setSelected(true);
         IdField.setText(cobj.id);
-//        setSize(200,200);
-//        LogTab.add(scroll);
         setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+        exitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    saveConfig();
+                } catch (FileNotFoundException e1) {
+                    e1.printStackTrace();
+                }
+                System.exit(1);
+            }
+        });
+        mainPanel.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+                initialClick = e.getPoint();
+                getComponentAt(initialClick);
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+
+            }
+        });
+        mainPanel.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override
+            public void mouseDragged(MouseEvent e) {
+
+                // get location of Window
+                int thisX = getLocation().x;
+                int thisY = getLocation().y;
+
+                // Determine how much the mouse moved since the initial click
+                int xMoved = (thisX + e.getX()) - (thisX + initialClick.x);
+                int yMoved = (thisY + e.getY()) - (thisY + initialClick.y);
+
+                // Move window to this position
+                int X = thisX + xMoved;
+                int Y = thisY + yMoved;
+                setLocation(X, Y);
+            }
+        });
         addWindowListener(new WindowListener() {
             //I skipped unused callbacks for readability
 
@@ -149,10 +211,40 @@ public class Launcher extends JFrame{
 
             }
         });
+        loadServerList();
+        loadVerList();
+        setBg(cobj.r, cobj.g, cobj.b,cobj.a);
         setLocationRelativeTo(null);
         setVisible(true);
-    }
 
+    }
+    public float getPercent(int i){
+        return i/255;
+    }
+    public void setBg(int x,int y,int z){
+        getContentPane().setBackground(new Color(x,y,z));
+        setBackground(new Color(x, y, z));
+    }
+    public void setBg(int x,int y,int z, int a){
+        if(a==255){
+            getContentPane().setBackground(new Color(x,y,z));
+            mainPanel.setOpaque(true);
+        }
+        else{
+            mainPanel.setOpaque(false);
+            setBackground(new Color(x, y, z, a));
+        }
+    }
+    public void setBg(int a){
+        if(a==255){
+            getContentPane().setBackground(new Color(cobj.r,cobj.g,cobj.b));
+            mainPanel.setOpaque(true);
+        }
+        else {
+            mainPanel.setOpaque(false);
+            setBackground(new Color(cobj.r, cobj.g, cobj.b, a));
+        }
+    }
     public void loadServerList() throws IOException {
         ServerList.removeAllItems();
         NBT n = new NBT();
@@ -177,17 +269,10 @@ public class Launcher extends JFrame{
     }
 
     public void saveConfig() throws FileNotFoundException {
-        ConfigObj obj = new ConfigObj();
+        ConfigObj obj = cobj;
         obj.id = IdField.getText();
         obj.server = ServerList.getSelectedItem().toString();
         obj.version = VerList.getSelectedItem().toString();
-        obj.launcherStatus = cobj.launcherStatus;
-        obj.mcpath = cobj.mcpath;
-        obj.isPing = cobj.isPing;
-        obj.isRelease = cobj.isRelease;
-        obj.isSnapshot = cobj.isSnapshot;
-        obj.isBeta = cobj.isBeta;
-        obj.isAlpha = cobj.isAlpha;
         Gson gson = new Gson();
         String json = gson.toJson(obj);
         File file = new File(System.getenv("APPDATA")+"\\.minecraft\\"+"Klauncher.json");
@@ -231,6 +316,12 @@ public class Launcher extends JFrame{
             }
             Gson gson = new Gson();
             ConfigObj obj = gson.fromJson(json.toString(), ConfigObj.class);
+            if(obj.r == null){
+                obj.r = 51;
+                obj.g = 153;
+                obj.b = 255;
+                obj.a = 255;
+            }
             return obj;
         }
         else{
@@ -253,7 +344,6 @@ public class Launcher extends JFrame{
         return false;
     }
     private void createUIComponents() {
-
         LogPane = new JTextArea();
         LogPane.setEditable(false);
         LogPane.setText("");
@@ -285,6 +375,7 @@ public class Launcher extends JFrame{
     class ConfigObj{
         String id,version,mcpath,server;
         int launcherStatus;
+        Integer r=51,g=153,b=255,a=255;
         boolean isPing,isRelease,isSnapshot,isBeta,isAlpha;
     }
     public boolean validDir(String p){

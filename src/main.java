@@ -14,12 +14,11 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
-
 /**
  * Created by KickVN on 24/6/2015.
  */
 public class main {
-    static String version="1.0.5";
+    static String version="2.0";
     static String Url = "http://kickvn.tk/launcher/";
     static Launcher l;
     public static void main(String[] args) throws ZipException, ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException, IOException {
@@ -29,7 +28,8 @@ public class main {
         if(validFile("KUpdate.jar")) up.delete();
         try
         {
-            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+//            UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+            UIManager.setLookAndFeel("com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
         }
         catch(Exception e){
         }
