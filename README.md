@@ -1,2 +1,3 @@
 # KLauncher
-Vietnamese Cracked Minecraft Launcher
+Minecraft launcher in Vietnamese
+Warning: spaghetti code!
